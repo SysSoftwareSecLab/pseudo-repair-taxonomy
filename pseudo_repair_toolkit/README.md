@@ -1,0 +1,133 @@
+# Pseudo-Repair Taxonomy Toolkit
+
+A runnable code package for the taxonomy paper **Pseudo-Repair in Human-Driven Iterative LLM Code Refinement**.
+
+The package operationalizes the following ideas:
+
+- **Pseudo-Repair**: an apparent fix in iterative LLM code refinement that creates the impression of remediation without substantively closing the underlying vulnerability or correctness problem.
+- **Four top-level outcomes**:
+  - True Repair
+  - Pseudo-Repair
+  - Vulnerability Mutation
+  - Regression
+- **Pseudo-Repair subtypes**:
+  - PR-SS: Surface Suppression
+  - PR-SN: Scope Narrowing
+  - PR-VM: Vulnerability Migration
+  - PR-SR: Semantic Regression
+
+## Repository Status
+
+Empirical data, annotation guidelines, and conversation trajectories will be released upon paper acceptance. This prototype package includes:
+
+- taxonomy definitions;
+- a draft trajectory schema;
+- a conservative rule-based classifier for annotation support;
+- synthetic examples that illustrate each taxonomy category;
+- Markdown/JSON report generation;
+- tests and usage documentation.
+
+It is **not** a production security scanner and **not** a benchmark-scale empirical release.
+
+## Quick Start
+
+```bash
+cd pseudo_repair_toolkit
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+pseudo-repair taxonomy
+pseudo-repair validate examples/trajectories
+pseudo-repair classify examples/trajectories/pr_surface_suppression.json --format md
+pseudo-repair batch examples/trajectories --format md --out reports/batch_report.md
+```
+
+Without installation, you can also run:
+
+```bash
+PYTHONPATH=src python -m pseudo_repair.cli taxonomy
+PYTHONPATH=src python -m pseudo_repair.cli batch examples/trajectories --format json
+```
+
+## Input Schema
+
+Each trajectory is a JSON object:
+
+```json
+{
+  "id": "pr_surface_suppression_demo",
+  "prompt": "This seems unsafe. Please fix it without changing the API.",
+  "original_code": "...",
+  "repaired_code": "...",
+  "static_findings": {
+    "before_count": 2,
+    "after_count": 0,
+    "before_types": ["SQL_INJECTION"],
+    "after_types": []
+  },
+  "validation": {
+    "original_vulnerability_closed": false,
+    "exploit_path_reachable_after": true,
+    "functionality_preserved": true,
+    "new_vulnerability_introduced": false,
+    "related_new_vulnerability": false,
+    "input_scope_narrowed": false,
+    "notes": "Dynamic oracle still reaches the unsafe query path."
+  },
+  "apparent_cues": {
+    "warning_disappeared": true,
+    "defensive_syntax_added": true,
+    "explicit_security_claim": true,
+    "narrower_input_handling": false,
+    "user_facing_assurance": false,
+    "other": []
+  }
+}
+```
+
+## Operational Classification Logic
+
+The classifier prioritizes structured validation evidence:
+
+1. If the original issue is closed, functionality is preserved, and no new vulnerability is introduced, classify as **True Repair**.
+2. If functionality breaks without a credible apparent safety cue, classify as **Regression**.
+3. If functionality breaks while the artifact appears safer, classify as **Pseudo-Repair / PR-SR**.
+4. If the original issue remains while apparent remediation cues exist, classify as **Pseudo-Repair** and infer a subtype.
+5. If a new vulnerability is introduced without the appearance of remediation, classify as **Vulnerability Mutation**.
+6. If evidence is incomplete, classify as **Needs Review** instead of over-claiming.
+
+This mirrors the taxonomy distinction between appearance and substantive remediation: static-warning disappearance alone is useful evidence but not a sufficient proof of repair.
+
+## Example Commands
+
+```bash
+pseudo-repair classify examples/trajectories/true_repair.json --format json
+pseudo-repair classify examples/trajectories/pr_scope_narrowing.json --format md
+pseudo-repair batch examples/trajectories --format md --out reports/examples.md
+```
+
+## Run Tests
+
+```bash
+python -m unittest discover -s tests
+```
+
+## Package Layout
+
+```text
+pseudo_repair_toolkit/
+  src/pseudo_repair/
+    taxonomy.py       # outcome and subtype definitions
+    schema.py         # trajectory schema and validation
+    classifier.py     # rule-based operational classifier
+    report.py         # Markdown/JSON report generation
+    cli.py            # command line interface
+  examples/trajectories/
+  docs/
+  tests/
+```
+
+## Citation Note
+
+If you use this prototype, cite the Pseudo-Repair taxonomy paper and state that this repository is a prototype implementation for annotation support rather than a benchmark dataset.

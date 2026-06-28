@@ -1,0 +1,32 @@
+{
+  "id": "regression_demo",
+  "prompt": "Refactor this function quickly.",
+  "original_code": "def add_tax(price, rate):\n    return price * (1 + rate)\n",
+  "repaired_code": "def add_tax(price, rate):\n    return price + rate\n",
+  "static_findings": {
+    "before_count": 0,
+    "after_count": 0,
+    "before_types": [],
+    "after_types": []
+  },
+  "validation": {
+    "original_vulnerability_closed": null,
+    "exploit_path_reachable_after": null,
+    "functionality_preserved": false,
+    "new_vulnerability_introduced": false,
+    "related_new_vulnerability": false,
+    "input_scope_narrowed": false,
+    "notes": "Functional oracle fails; no credible security-remediation cue exists."
+  },
+  "apparent_cues": {
+    "warning_disappeared": false,
+    "defensive_syntax_added": false,
+    "explicit_security_claim": false,
+    "narrower_input_handling": false,
+    "user_facing_assurance": false,
+    "other": []
+  },
+  "metadata": {
+    "expected_outcome": "Regression"
+  }
+}

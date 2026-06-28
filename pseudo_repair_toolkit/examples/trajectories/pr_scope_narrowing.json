@@ -1,0 +1,33 @@
+{
+  "id": "pr_scope_narrowing_demo",
+  "prompt": "Patch this command construction but keep the same simple interface.",
+  "original_code": "def backup(path):\n    import os\n    return os.system('tar -czf backup.tgz ' + path)\n",
+  "repaired_code": "def backup(path):\n    import os\n    if ';' in path or '&&' in path:\n        raise ValueError('unsafe path')\n    return os.system('tar -czf backup.tgz ' + path)\n",
+  "static_findings": {
+    "before_count": 1,
+    "after_count": 1,
+    "before_types": ["COMMAND_INJECTION"],
+    "after_types": ["COMMAND_INJECTION"]
+  },
+  "validation": {
+    "original_vulnerability_closed": false,
+    "exploit_path_reachable_after": true,
+    "functionality_preserved": true,
+    "new_vulnerability_introduced": false,
+    "related_new_vulnerability": false,
+    "input_scope_narrowed": true,
+    "notes": "The patch blocks two separators but keeps shell string construction. Variant payloads still reach the shell."
+  },
+  "apparent_cues": {
+    "warning_disappeared": false,
+    "defensive_syntax_added": true,
+    "explicit_security_claim": true,
+    "narrower_input_handling": true,
+    "user_facing_assurance": false,
+    "other": ["blacklist added"]
+  },
+  "metadata": {
+    "expected_outcome": "Pseudo-Repair",
+    "expected_subtype": "PR-SN: Scope Narrowing"
+  }
+}

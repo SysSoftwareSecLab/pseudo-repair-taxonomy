@@ -1,0 +1,2 @@
+[console_scripts]
+pseudo-repair = pseudo_repair.cli:main

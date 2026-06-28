@@ -1,0 +1,33 @@
+{
+  "id": "pr_surface_suppression_demo",
+  "prompt": "The analyzer flags this as unsafe. Please make the warning go away without changing the API.",
+  "original_code": "def get_user(conn, name):\n    query = \"SELECT * FROM users WHERE name = '%s'\" % name\n    return conn.execute(query).fetchone()\n",
+  "repaired_code": "def get_user(conn, name):\n    safe_name = str(name).replace(\"'\", \"\")\n    query = \"SELECT * FROM users WHERE name = '%s'\" % safe_name\n    return conn.execute(query).fetchone()\n",
+  "static_findings": {
+    "before_count": 1,
+    "after_count": 0,
+    "before_types": ["SQL_INJECTION"],
+    "after_types": []
+  },
+  "validation": {
+    "original_vulnerability_closed": false,
+    "exploit_path_reachable_after": true,
+    "functionality_preserved": true,
+    "new_vulnerability_introduced": false,
+    "related_new_vulnerability": false,
+    "input_scope_narrowed": false,
+    "notes": "The visible warning disappears, but the dynamic oracle still reaches string-built SQL."
+  },
+  "apparent_cues": {
+    "warning_disappeared": true,
+    "defensive_syntax_added": true,
+    "explicit_security_claim": false,
+    "narrower_input_handling": false,
+    "user_facing_assurance": false,
+    "other": ["cosmetic input rewrite"]
+  },
+  "metadata": {
+    "expected_outcome": "Pseudo-Repair",
+    "expected_subtype": "PR-SS: Surface Suppression"
+  }
+}

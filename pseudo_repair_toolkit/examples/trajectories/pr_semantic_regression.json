@@ -1,0 +1,33 @@
+{
+  "id": "pr_semantic_regression_demo",
+  "prompt": "Make this file reader safer but preserve the documented behavior.",
+  "original_code": "def read_user_file(base, rel_path):\n    with open(base + '/' + rel_path, 'r') as f:\n        return f.read()\n",
+  "repaired_code": "def read_user_file(base, rel_path):\n    # security fix: do not allow reading user supplied files\n    return ''\n",
+  "static_findings": {
+    "before_count": 1,
+    "after_count": 0,
+    "before_types": ["PATH_TRAVERSAL"],
+    "after_types": []
+  },
+  "validation": {
+    "original_vulnerability_closed": true,
+    "exploit_path_reachable_after": false,
+    "functionality_preserved": false,
+    "new_vulnerability_introduced": false,
+    "related_new_vulnerability": false,
+    "input_scope_narrowed": true,
+    "notes": "The repair avoids file access by deleting required behavior; functional oracle fails."
+  },
+  "apparent_cues": {
+    "warning_disappeared": true,
+    "defensive_syntax_added": true,
+    "explicit_security_claim": true,
+    "narrower_input_handling": true,
+    "user_facing_assurance": false,
+    "other": ["required feature removed"]
+  },
+  "metadata": {
+    "expected_outcome": "Pseudo-Repair",
+    "expected_subtype": "PR-SR: Semantic Regression"
+  }
+}
