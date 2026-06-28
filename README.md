@@ -4,10 +4,7 @@
 
 This repository accompanies the technical report:
 
-> Xiaolei Ren. "Pseudo-Repair in Human-Driven Iterative LLM Code 
-> Refinement: A Taxonomy of Apparent Fixes." arXiv preprint, 
-> April 2026.
-> [arXiv link — to be added after submission]
+Ren, X. (2026). Pseudo-Repair in Human-Driven Iterative LLM Code Refinement: A Taxonomy of Apparent Fixes as an Open Technical Report (1.0). Zenodo. https://doi.org/10.5281/zenodo.19671315
 
 ## What is Pseudo-Repair?
 
